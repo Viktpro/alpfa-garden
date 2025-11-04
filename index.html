@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>Альфа-сад инвестиций с программами</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --color-red: #C1272D;
+    --color-red-bright: #E53935;
+    --color-bg: #f0f2f5;
+    --color-text: #333;
+    --color-white: #fff;
+    --color-green-light: #a8d5a3;
+    --color-green-dark: #417d3d;
+    --color-gray-light: #d9d9d9;
+    --color-gray-dark: #777;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    font-family: system-ui, Segoe UI, Roboto, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    box-sizing: border-box;
+  }
+  header {
+    background-color: var(--color-white);
+    color: var(--color-red);
+    padding: 25px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 2rem;
+    border-bottom: 3px solid var(--color-red);
+    user-select: none;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  #garden {
+    background: var(--color-white);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(114,145,82,0.15);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: flex-start;
+    align-content: flex-start;
+    min-height: 300px;
+  }
+  .controls, .management, .log, .dashboard, .achievements {
+    background: var(--color-white);
+    border-radius: 20px;
+    padding: 15px 20px;
+    box-shadow: 0 6px 16px rgba(193,21,22,0.3);
+    border: 2px solid var(--color-red);
+    user-select: none;
+    margin-top: 25px;
+  }
+  .controls h2, .management h2, .log h3, .dashboard h3, .achievements h2 {
+    margin-top: 0;
+    color: var(--color-red);
+    font-weight: 700;
+  }
+  .controls h2, .management h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  .log h3, .dashboard h3, .achievements h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1em;
+  }
+  label {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-top: 10px;
+    display: block;
+  }
+  select, input[type="text"], input[type="number"] {
+    width: 65%;
+    max-width: 350px;
+    padding: 8px 12px;
+    margin-top: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--color-gray-dark);
+    font-size: 1rem;
+    line-height: 1.3;
+    background-color: var(--color-white);
+    color: var(--color-text);
+    transition: border-color 0.3s;
+  }
+  select:focus, input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: var(--color-red);
+    box-shadow: 0 0 8px rgba(193,21,22,0.6);
+  }
+  .btn {
+    background-color: var(--color-red);
+    color: var(--color-white);
+    border: none;
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(193,21,22,0.75);
+    transition: background-color 0.3s;
+  }
+  .btn:hover:not(:disabled) {
+    background-color: var(--color-red-bright);
+  }
+  .btn-small {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    margin: 4px 2px;
+    border-radius: 10px;
+  }
+  .btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .plant {
+    background-color: var(--color-white);
+    border-radius: 20px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    border: 2px solid var(--color-red);
+    box-shadow: 0 6px 16px rgba(193,21,22,0.4);
+    transition: transform 0.4s, box-shadow 0.4s;
+    user-select: none;
+    position: relative;
+  }
+  .plant:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 20px rgba(193,21,22,0.7);
+  }
+  .progress {
+    height: 16px;
+    background: var(--color-gray-light);
+    border-radius: 10px;
+    margin: 12px 0;
+    overflow: hidden;
+  }
+  .progress .bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-green-light), var(--color-white) 40%, var(--color-red) 80%);
+    width: 0;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+  .petal {
+    transition: transform 0.5s ease;
+    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.15));
+  }
+  hr {
+    border: none;
+    border-top: 2px solid var(--color-red);
+    margin-top: 25px;
+  }
+  #fertilizeMessage {
+    color: var(--color-red);
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .chart-container {
+    margin-top: 25px;
+  }
+  canvas {
+    background: var(--color-white);
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+    width: 100% !important;
+    height: 320px !important;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+  }
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-gray-light);
+  }
+  th {
+    background-color: var(--color-red);
+    color: var(--color-white);
+    font-weight: 700;
+  }
+  tbody tr:nth-child(even) {
+    background-color: var(--color-gray-light);
+  }
+  tbody tr:hover {
+    background-color: var(--color-green-light);
+  }
+  tbody td:nth-child(2), tbody td:nth-child(3) {
+    text-align: right;
+  }
+  .log ul {
+    list-style:none;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-left: 10px;
+    font-size: 0.9rem;
+    color: #333;
+    margin:0;
+  }
+  .log ul li {
+    padding: 4px 2px;
+    border-bottom: 1px solid #e0b0b0;
+  }
+  .log ul li:last-child {
+    border-bottom: none;
+  }
+  .dashboard {
+    margin-top: 25px;
+    color: var(--color-red);
+    font-weight: 700;
+  }
+  .dashboard div {
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+  .dashboard button {
+    margin-top: 10px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: var(--color-red);
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    cursor: pointer;
+  }
+  .dashboard button:hover {
+    background-color: var(--color-red-bright);
+  }
+  @media (max-width: 900px) {
+    .container {
+      padding: 10px 15px;
+    }
+    #garden {
+      min-height: 250px;
+      margin-bottom: 20px;
+    }
+    .controls, .management, .log, .dashboard, .achievements {
+      margin-top: 15px;
+      padding: 15px;
+    }
+    .btn {
+      padding: 10px;
+      font-size: 0.95rem;
+    }
+    canvas {
+      height: 250px !important;
+    }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      max-width: none;
+    }
+  }
+</style>
+</head>
+<body>
+<header>Альфа-сад инвестиций</header>
+
+<div class="container">
+  <section id="garden" aria-label="Сад инвестиций"></section>
+
+  <aside class="controls" aria-label="Управление садом">
+    <h2>Добавить инвестицию</h2>
+    <form id="addInvestmentForm" autocomplete="off">
+      <label for="investmentName">Название</label>
+      <input type="text" id="investmentName" placeholder="Название" required />
+
+      <label for="initialValue">Сумма (мин 100 ₽)</label>
+      <input type="number" id="initialValue" placeholder="Сумма" min="100" required />
+
+      <label for="investmentType">Тип</label>
+      <select id="investmentType" required>
+        <option value="" disabled selected>Выберите тип</option>
+        <option value="tree">Дерево</option>
+        <option value="flower">Цветок</option>
+      </select>
+
+      <label for="flowerColor" id="flowerColorLabel" style="display:none;">Цвет цветка</label>
+      <select id="flowerColor" style="display:none;">
+        <option value="#f48fb1" style="background:#f48fb1;">Розовый</option>
+        <option value="#fff59d" style="background:#fff59d;color:#333;">Жёлтый</option>
+        <option value="#ba68c8" style="background:#ba68c8;">Фиолетовый</option>
+      </select>
+
+      <label for="productSelect">Выберите инвестиционный продукт</label>
+      <select id="productSelect" required>
+        <option value="" disabled selected>Выберите программу</option>
+        <option value="mortgage">Ипотека</option>
+        <option value="business_loan">Кредит для бизнеса</option>
+        <option value="bonds">Инвестиции в облигации</option>
+        <option value="stocks">Инвестиции в акции</option>
+        <option value="mutual_funds">Паи в фондах</option>
+      </select>
+
+      <label>Валюта: ₽ Рубль (фиксирована)</label>
+      <button type="submit" class="btn">Создать</button>
+    </form>
+    <hr />
+    <h2>Баланс: <span id="balance">5000.00 ₽</span></h2>
+
+    <aside class="management" aria-label="Управление инвестициями" style="margin-top: 30px;">
+      <h2>Уход за садом</h2>
+
+      <label for="autoWateringAmount">Автоматический полив (руб/мес)</label>
+      <input type="number" id="autoWateringAmount" placeholder="Например, 1000" min="0" value="0" />
+
+      <button id="startAutoWateringBtn" class="btn">Включить автополив</button>
+      <button id="stopAutoWateringBtn" class="btn" disabled>Остановить автополив</button>
+
+      <hr />
+
+      <button id="manualWateringBtn" class="btn">Ручной полив (+1000 ₽)</button>
+
+      <hr />
+
+      <button id="fertilizeBtn" class="btn">Удобрить сад (проверить диверсификацию)</button>
+
+      <p id="fertilizeMessage"></p>
+
+      <div class="chart-container">
+        <canvas id="profitGrowthChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="typeDistributionChart"></canvas>
+      </div>
+
+      <div class="log" aria-label="Журнал действий" style="margin-top: 25px;">
+        <h3>Журнал действий</h3>
+        <ul id="actionLog"></ul>
+      </div>
+
+      <div class="dashboard" aria-label="Обзор сада">
+        <h3>Обзор сада</h3>
+        <div>Общая сумма инвестиций: <span id="totalInvestment">0.00 ₽</span></div>
+        <div>Средний рост: <span id="avgGrowth">0</span>%</div>
+        <div>Общая прибыль: <span id="totalProfit">0.00 ₽</span></div>
+        <div>Количество растений: <span id="plantCount">0</span></div>
+        <div>Баланс пользователя: <span id="userBalance">0.00 ₽</span></div>
+        <button id="careAllBtn">Ухаживать за всеми</button>
+      </div>
+
+      <div class="achievements" aria-label="Достижения и рейтинги" style="margin-top:30px;">
+        <h2>Рейтинги</h2>
+        <div>Общий размер сада: <span id="ratingSize">0 ₽</span></div>
+        <div>Средний рост: <span id="ratingGrowth">0%</span></div>
+        <div>Общий урожай: <span id="ratingHarvest">0 ₽</span></div>
+        <h2>Достижения</h2>
+        <ul id="achievementList" style="list-style:none; padding-left:0;"></ul>
+      </div>
+    </aside>
+  </aside>
+</div>
+
+<section aria-label="Таблица лидеров" style="max-width: 1200px; margin: 40px auto 60px; padding: 0 20px">
+  <h2>Лидеры сада</h2>
+  <table id="leaderboardTable" aria-describedby="Лидеры с наибольшим ростом и прибылью">
+    <thead>
+      <tr>
+        <th>Инвестиция</th>
+        <th>Продукт</th>
+        <th>Рост %</th>
+        <th>Прибыль (₽)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const garden = document.getElementById("garden");
+  const form = document.getElementById("addInvestmentForm");
+  const investmentType = document.getElementById("investmentType");
+  const flowerColor = document.getElementById("flowerColor");
+  const flowerColorLabel = document.getElementById("flowerColorLabel");
+  const balanceSpan = document.getElementById("balance");
+
+  const autoWateringInput = document.getElementById("autoWateringAmount");
+  const startAutoWateringBtn = document.getElementById("startAutoWateringBtn");
+  const stopAutoWateringBtn = document.getElementById("stopAutoWateringBtn");
+  const manualWateringBtn = document.getElementById("manualWateringBtn");
+  const fertilizeBtn = document.getElementById("fertilizeBtn");
+  const fertilizeMessage = document.getElementById("fertilizeMessage");
+  const actionLog = document.getElementById("actionLog");
+
+  const totalInvestmentSpan = document.getElementById("totalInvestment");
+  const avgGrowthSpan = document.getElementById("avgGrowth");
+  const totalProfitSpan = document.getElementById("totalProfit");
+  const plantCountSpan = document.getElementById("plantCount");
+  const userBalanceSpan = document.getElementById("userBalance");
+
+  const ratingSizeSpan = document.getElementById("ratingSize");
+  const ratingGrowthSpan = document.getElementById("ratingGrowth");
+  const ratingHarvestSpan = document.getElementById("ratingHarvest");
+  const achievementList = document.getElementById("achievementList");
+
+  const profitGrowthCtx = document.getElementById("profitGrowthChart").getContext("2d");
+  const typeDistributionCtx = document.getElementById("typeDistributionChart").getContext("2d");
+
+  let balance = 5000;
+  let investments = [];
+  let autoWateringInterval = null;
+
+  let profitHistory = [];
+  let timeLabels = [];
+
+  const MAX_GROWTH = 100;
+  const MIN_GROWTH = 0;
+
+  function isWithered(inv) {
+    return inv.growth === MIN_GROWTH && inv.profit < 0;
+  }
+
+  let achievements = new Set();
+
+  function updateDashboard() {
+    const totalInv = investments.reduce((a, i) => a + i.initial, 0);
+    const avgGrowth = investments.length ? investments.reduce((a, i) => a + i.growth, 0) / investments.length : 0;
+    const totalprof = investments.reduce((a, i) => a + i.profit, 0);
+    const countPlants = investments.length;
+    totalInvestmentSpan.textContent = totalInv.toFixed(2) + " ₽";
+    avgGrowthSpan.textContent = avgGrowth.toFixed(1);
+    totalProfitSpan.textContent = totalprof.toFixed(2) + " ₽";
+    plantCountSpan.textContent = countPlants;
+    userBalanceSpan.textContent = balance.toFixed(2) + " ₽";
+  }
+
+  function logAction(message) {
+    const time = new Date().toLocaleTimeString();
+    const entry = document.createElement("li");
+    entry.textContent = `[${time}] ${message}`;
+    actionLog.prepend(entry);
+    if (actionLog.children.length > 30) actionLog.removeChild(actionLog.lastChild);
+  }
+
+  investmentType.addEventListener("change", () => {
+    if (investmentType.value === "flower") {
+      flowerColor.style.display = "block";
+      flowerColorLabel.style.display = "block";
+    } else {
+      flowerColor.style.display = "none";
+      flowerColorLabel.style.display = "none";
+    }
+  });
+
+  function formatProductName(code) {
+    switch(code) {
+      case "mortgage": return "Ипотека";
+      case "business_loan": return "Кредит для бизнеса";
+      case "bonds": return "Инвестиции в облигации";
+      case "stocks": return "Инвестиции в акции";
+      case "mutual_funds": return "Паи в фондах";
+      default: return "Неизвестно";
+    }
+  }
+
+  function updateBalance(amount) {
+    balance += amount;
+    if (balance < 0) balance = 0;
+    balanceSpan.textContent = balance.toFixed(2) + " ₽";
+    updateDashboard();
+  }
+
+  function updateRatingsAndAchievements() {
+    const totalSize = investments.reduce((sum, i) => sum + i.initial, 0);
+    const avgGrowth = investments.length ? investments.reduce((sum, i) => sum + i.growth, 0) / investments.length : 0;
+    const totalHarvest = investments.reduce((sum, i) => sum + i.profit, 0);
+
+    ratingSizeSpan.textContent = totalSize.toFixed(2) + " ₽";
+    ratingGrowthSpan.textContent = avgGrowth.toFixed(1) + "%";
+    ratingHarvestSpan.textContent = totalHarvest.toFixed(2) + " ₽";
+
+    let updated = false;
+
+    if (!achievements.has("firstHarvest") && investments.some(i => i.profit > 0)) {
+      achievements.add("firstHarvest");
+      addAchievement("Первый урожай");
+      updated = true;
+    }
+    if (!achievements.has("diversifier") && investments.length > 0) {
+      const types = new Set(investments.map(i => i.type));
+      const hasNoWeeds = !investments.some(i => isWithered(i));
+      if (types.size > 1 && hasNoWeeds) {
+        achievements.add("diversifier");
+        addAchievement("Мастер диверсификации");
+        updated = true;
+      }
+    }
+    if (!achievements.has("weedFree") && investments.length > 0) {
+      const noWeeds = !investments.some(i => isWithered(i));
+      if (noWeeds) {
+        achievements.add("weedFree");
+        addAchievement("Сад без сорняков");
+        updated = true;
+      }
+    }
+    if (updated) updateAchievementDisplay();
+  }
+
+  function addAchievement(name) {
+    let li = document.createElement("li");
+    li.textContent = "🏆 " + name;
+    li.style.color = "var(--color-red)";
+    achievementList.appendChild(li);
+    logAction("Достижение получено: " + name);
+  }
+
+  function updateAchievementDisplay() {
+    // Можно добавить визуальные эффекты
+  }
+
+  function createFlowerSVG(color, growth) {
+    const petalCount = 8;
+    const petals = [];
+    const angleStep = 360 / petalCount;
+    for (let i = 0; i < petalCount; i++) {
+      const angle = angleStep * i;
+      const cx = 32 + 20 * Math.cos((angle * Math.PI) / 180);
+      const cy = 32 + 20 * Math.sin((angle * Math.PI) / 180);
+      petals.push(`<circle class="petal" cx="${cx}" cy="${cy}" r="10" fill="${color}" style="filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.15)); transition: transform 0.5s ease;" />`);
+    }
+    const scale = 0.5 + growth / 200;
+    const stemHeight = growth * 0.6;
+    return `<svg width="150" height="150" viewBox="0 0 64 64" aria-label="Цветок" xmlns="http://www.w3.org/2000/svg"><g style="transform-origin:32px 32px; transform-box: fill-box; transform: scale(${scale}); transition: transform 0.5s;">${petals.join("")}<circle cx="32" cy="32" r="12" fill="#ffeb3b" stroke="#fbc02d" stroke-width="1.5"/><rect x="30" y="42" width="4" height="${stemHeight}" fill="#2e7d32" rx="2" ry="2" /></g></svg>`;
+  }
+
+  function createPlant(inv) {
+    const div = document.createElement("div");
+    div.className = "plant";
+    div.dataset.id = inv.id;
+    let svg = "";
+    if (inv.type === "tree") {
+      if (inv.growth >= MAX_GROWTH) {
+        svg = `<svg width="150" height="150" viewBox="0 0 64 64" aria-label="Дерево" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="20" r="12" fill="#7bc47f" /><circle cx="20" cy="30" r="10" fill="#8fcf7e" /><circle cx="44" cy="30" r="10" fill="#6aac45" /><rect x="28" y="32" width="8" height="30" fill="#5d432c" /><line x1="30" y1="35" x2="34" y2="50" stroke="#3d2f1f" stroke-width="1" /><line x1="32" y1="35" x2="32" y2="60" stroke="#3d2f1f" stroke-width="1" /></svg>`;
+      } else {
+        const crownRadius = 5 + (inv.growth / 100) * 9;
+        const trunkHeight = 10 + (inv.growth / 100) * 20;
+        svg = `<svg width="150" height="150" viewBox="0 0 64 64" aria-label="Молодое дерево" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="${40 - trunkHeight}" r="${crownRadius}" fill="#a8d5a3" /><rect x="28" y="${40 - trunkHeight + crownRadius}" width="8" height="${trunkHeight}" fill="#5d432c" /><line x1="30" y1="${42 - trunkHeight + crownRadius}" x2="34" y2="${57 - trunkHeight + crownRadius}" stroke="#3d2f1f" stroke-width="1" /><line x1="32" y1="${42 - trunkHeight + crownRadius}" x2="32" y2="${67 - trunkHeight + crownRadius}" stroke="#3d2f1f" stroke-width="1" /></svg>`;
+      }
+    } else if (inv.type === "flower") {
+      svg = createFlowerSVG(inv.color, inv.growth);
+    }
+
+    const isWeed = isWithered(inv);
+    if (isWeed) div.style.backgroundColor = "#f8d7da";
+    const profitDisplay = isWeed ? `Убыток: ${inv.profit.toFixed(2)} ₽` : `Прибыль: ${inv.profit.toFixed(2)} ₽`;
+    const growthDisplay = isWeed ? "Сорняк" : `${inv.growth.toFixed(0)}%`;
+
+    div.innerHTML = `
+      <h3>${inv.name} (${inv.type === "tree" ? "Дерево" : "Цветок"})</h3>
+      <p><strong>Продукт:</strong> ${formatProductName(inv.product)}</p>
+      <div>${svg}</div>
+      <div class="progress" aria-label="Прогресс роста"><div class="bar" style="width:${inv.growth}%;"></div></div>
+      <p><strong>Рост:</strong> ${growthDisplay}</p>
+      <p><strong>${isWeed ? "Убыток" : "Урожай"}:</strong> ${profitDisplay}</p>
+      <div>
+        ${!isWeed ? `
+          ${inv.profit > 0 ? `<button class="btn btn-small btn-harvest">Собрать урожай</button>
+                              <button class="btn btn-small btn-reinvest">Пересадить урожай</button>` : ""}
+          <button class="btn btn-small btn-remove">Удалить</button>
+        ` : `
+          <button class="btn btn-small btn-remove">Вырвать</button>
+          <button class="btn btn-small btn-cure">Вылечить (-500 ₽)</button>
+        `}
+        ${(!isWeed && inv.growth < MAX_GROWTH) ? `<button class="btn btn-small btn-care">Ухаживать (-100 ₽)</button>` : ""}
+      </div>
+    `;
+
+    if (!isWeed) {
+      if (inv.profit > 0) {
+        div.querySelector(".btn-harvest").addEventListener("click", () => {
+          updateBalance(inv.profit);
+          logAction(`Собран урожай с "${inv.name}" +${inv.profit.toFixed(2)} ₽`);
+          inv.profit = 0;
+          refreshGarden();
+          updateLeaderboard();
+          updateCharts();
+          updateDashboard();
+          updateRatingsAndAchievements();
+        });
+        div.querySelector(".btn-reinvest").addEventListener("click", () => {
+          if (balance < inv.profit) {
+            alert("Недостаточно баланса для пересадки урожая.");
+            return;
+          }
+          updateBalance(-inv.profit);
+          inv.growth = Math.min(MAX_GROWTH, inv.growth + 10);
+          logAction(`Пересажен урожай из "${inv.name}", рост увеличен до ${inv.growth.toFixed(0)}%`);
+          inv.profit = inv.initial * (inv.growth / 100) * 0.3;
+          refreshGarden();
+          updateLeaderboard();
+          updateCharts();
+          updateDashboard();
+          updateRatingsAndAchievements();
+        });
+      }
+      div.querySelector(".btn-remove").addEventListener("click", () => {
+        if (confirm(`Удалить растение "${inv.name}"?`)) {
+          logAction(`Удалено растение "${inv.name}"`);
+          investments = investments.filter(i => i.id !== inv.id);
+          refreshGarden();
+          updateLeaderboard();
+          updateCharts();
+          updateDashboard();
+          updateRatingsAndAchievements();
+        }
+      });
+    }
+    if (isWeed) {
+      div.querySelector(".btn-remove").addEventListener("click", () => {
+        logAction(`Вырван сорняк "${inv.name}", убыток: ${inv.profit.toFixed(2)} ₽`);
+        investments = investments.filter(i => i.id !== inv.id);
+        refreshGarden();
+        updateLeaderboard();
+        updateCharts();
+        updateDashboard();
+        updateRatingsAndAchievements();
+      });
+      div.querySelector(".btn-cure").addEventListener("click", () => {
+        if (balance < 500) {
+          alert("Недостаточно баланса для лечения.");
+          return;
+        }
+        updateBalance(-500);
+        inv.growth = 10;
+        inv.profit = inv.initial * (inv.growth / 100) * 0.3;
+        logAction(`Вылечено растение "${inv.name}", рост восстановлен`);
+        refreshGarden();
+        updateLeaderboard();
+        updateCharts();
+        updateDashboard();
+        updateRatingsAndAchievements();
+      });
+    }
+    if (!isWeed && inv.growth < MAX_GROWTH) {
+      div.querySelector(".btn-care").addEventListener("click", () => {
+        if (balance < 100) {
+          alert("Недостаточно средств для ухода!");
+          return;
+        }
+        updateBalance(-100);
+        inv.growth = Math.min(MAX_GROWTH, inv.growth + 10);
+        inv.profit = inv.initial * (inv.growth / 100) * 0.3;
+        logAction(`Ухаживали за "${inv.name}", рост: ${inv.growth.toFixed(0)}%`);
+        refreshGarden();
+        updateLeaderboard();
+        updateCharts();
+        updateDashboard();
+        updateRatingsAndAchievements();
+      });
+    }
+    return div;
+  }
+
+  function refreshGarden() {
+    garden.innerHTML = "";
+    investments.forEach(inv => garden.appendChild(createPlant(inv)));
+  }
+
+  function updateLeaderboard() {
+    const tbody = document.querySelector("#leaderboardTable tbody");
+    tbody.innerHTML = "";
+    const sorted = [...investments].sort((a, b) => b.growth - a.growth).slice(0, 5);
+    sorted.forEach(inv => {
+      tbody.innerHTML += `<tr>
+        <td>${inv.name}</td>
+        <td>${formatProductName(inv.product)}</td>
+        <td style="text-align:right;">${inv.growth.toFixed(1)}%</td>
+        <td style="text-align:right;">${inv.profit.toFixed(2)} ₽</td>
+      </tr>`;
+    });
+  }
+
+  function updateCharts() {
+    const totalProfit = investments.reduce((sum, inv) => sum + inv.profit, 0);
+    const now = new Date();
+    const timeLabel = now.toLocaleTimeString();
+    timeLabels.push(timeLabel);
+    profitHistory.push(totalProfit);
+    if (timeLabels.length > 20) {
+      timeLabels.shift();
+      profitHistory.shift();
+    }
+    profitGrowthChart.data.labels = timeLabels;
+    profitGrowthChart.data.datasets[0].data = profitHistory;
+    profitGrowthChart.update();
+    const countTree = investments.filter(inv => inv.type === "tree").length;
+    const countFlower = investments.filter(inv => inv.type === "flower").length;
+    typeDistributionChart.data.datasets[0].data = [countTree, countFlower];
+    typeDistributionChart.update();
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("investmentName").value.trim();
+    const sum = parseFloat(document.getElementById("initialValue").value);
+    const type = investmentType.value;
+    const product = document.getElementById("productSelect").value;
+    let color = null;
+    if (type === "flower") color = flowerColor.value;
+    if (!name || !sum || !type || !product || (type === "flower" && !color)) {
+      alert("Пожалуйста, заполните все поля.");
+      return;
+    }
+    if (sum > balance) {
+      alert("Недостаточно баланса.");
+      return;
+    }
+    updateBalance(-sum);
+    investments.push({ id: Date.now(), name, initial: sum, growth: 10, profit: sum * 0.03, type, color, product, currency: "₽" });
+    refreshGarden();
+    updateLeaderboard();
+    updateCharts();
+    logAction(`Добавлена инвестиция "${name}" (${formatProductName(product)}) сумма: ${sum} ₽`);
+    updateDashboard();
+    updateRatingsAndAchievements();
+    form.reset();
+    flowerColor.style.display = "none";
+    flowerColorLabel.style.display = "none";
+    document.activeElement.blur();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  startAutoWateringBtn.addEventListener("click", () => {
+    let amount = parseFloat(autoWateringInput.value);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Введите корректную сумму для автополива (больше 0)");
+      return;
+    }
+    startAutoWateringBtn.disabled = true;
+    stopAutoWateringBtn.disabled = false;
+    autoWateringInterval = setInterval(() => {
+      updateBalance(amount);
+      fertilizeMessage.textContent = `Автовливание: +${amount} ₽`;
+      logAction(`Автоматический полив +${amount} ₽`);
+      updateDashboard();
+      updateRatingsAndAchievements();
+    }, 5000);
+  });
+
+  stopAutoWateringBtn.addEventListener("click", () => {
+    clearInterval(autoWateringInterval);
+    autoWateringInterval = null;
+    fertilizeMessage.textContent = "Автополив остановлен.";
+    startAutoWateringBtn.disabled = false;
+    stopAutoWateringBtn.disabled = true;
+    logAction("Автоматический полив остановлен");
+  });
+
+  manualWateringBtn.addEventListener("click", () => {
+    updateBalance(1000);
+    fertilizeMessage.textContent = "Ручной полив: +1000 ₽";
+    logAction("Ручной полив +1000 ₽");
+    updateDashboard();
+    updateRatingsAndAchievements();
+  });
+
+  fertilizeBtn.addEventListener("click", () => {
+    const typeCounts = investments.reduce((acc, inv) => {
+      acc[inv.type] = (acc[inv.type] || 0) + 1;
+      return acc;
+    }, {});
+    const total = investments.length;
+    if (total === 0) {
+      fertilizeMessage.textContent = "Инвестиций нет, создайте сначала растения.";
+      logAction("Попытка удобрения, но инвестиций нет");
+      return;
+    }
+    const maxTypeCount = Math.max(...Object.values(typeCounts));
+    if (maxTypeCount / total > 0.7) {
+      fertilizeMessage.textContent = "Сад слишком однороден! Рекомендуется добавить новые типы или пересадить растения.";
+      logAction("Удобрение: сад однороден, рекомендована диверсификация");
+      let newSeedType = null;
+      if (!typeCounts.tree || typeCounts.tree / total < 0.3) newSeedType = "tree";
+      else if (!typeCounts.flower || typeCounts.flower / total < 0.3) newSeedType = "flower";
+      if (newSeedType) {
+        let newColor = "#f48fb1";
+        if (newSeedType === "flower") newColor = "#fff59d";
+        investments.push({
+          id: Date.now() + Math.random(),
+          name: "Новое семя",
+          initial: 1000,
+          growth: 0,
+          profit: 0,
+          type: newSeedType,
+          color: newSeedType === "flower" ? newColor : undefined,
+          currency: "₽"
+        });
+        fertilizeMessage.textContent += " Добавлено новое семя для диверсификации.";
+        logAction(`Удобрение: добавлено новое семя ${newSeedType}`);
+        refreshGarden();
+        updateLeaderboard();
+        updateCharts();
+        updateDashboard();
+        updateRatingsAndAchievements();
+      } else {
+        let maxGrowthIndex = 0;
+        let maxGrowth = 0;
+        investments.forEach((inv, i) => {
+          if (inv.growth > maxGrowth) {
+            maxGrowth = inv.growth;
+            maxGrowthIndex = i;
+          }
+        });
+        if (maxGrowthIndex >= 0) {
+          investments[maxGrowthIndex].growth = Math.max(0, investments[maxGrowthIndex].growth - 20);
+          fertilizeMessage.textContent += " Пересажено одно растение (уменьшен рост).";
+          logAction(`Удобрение: пересажено растение ${investments[maxGrowthIndex].name}`);
+          refreshGarden();
+          updateLeaderboard();
+          updateCharts();
+          updateDashboard();
+          updateRatingsAndAchievements();
+        }
+      }
+    } else {
+      fertilizeMessage.textContent = "Сад достаточно разнообразен, изменений не требуется.";
+      logAction("Удобрение: изменений не требуется");
+    }
+  });
+
+  let profitGrowthChart = new Chart(profitGrowthCtx, {
+    type: "line",
+    data: {
+      labels: timeLabels,
+      datasets: [{
+        label: "Общая прибыль",
+        data: profitHistory,
+        fill: true,
+        backgroundColor: "rgba(193, 21, 22, 0.2)",
+        borderColor: "rgba(193, 21, 22, 1)",
+        tension: 0.3,
+        pointRadius: 3,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } },
+      plugins: { title: { display: true, text: "Рост общей прибыли инвестиций", font: { size: 16 } } },
+    },
+  });
+
+  let typeDistributionChart = new Chart(typeDistributionCtx, {
+    type: "doughnut",
+    data: {
+      labels: ["Дерево", "Цветок"],
+      datasets: [{
+        label: "Распределение по типам",
+        data: [0, 0],
+        backgroundColor: ["#7bc47f", "#f48fb1"],
+        borderColor: "#fff",
+        borderWidth: 2,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom" },
+        title: { display: true, text: "Распределение инвестиций по типам", font: { size: 16 } },
+      },
+    },
+  });
+
+  refreshGarden();
+  updateLeaderboard();
+  updateCharts();
+  updateDashboard();
+  updateRatingsAndAchievements();
+  balanceSpan.textContent = balance.toFixed(2) + " ₽";
+  logAction(`Приложение загружено, стартовый баланс: ${balance.toFixed(2)} ₽`);
+
+  document.getElementById('careAllBtn').addEventListener('click', () => {
+    const costPerPlant = 100;
+    const totalCost = costPerPlant * investments.length;
+    if (balance < totalCost) {
+      alert('Недостаточно средств для ухода за всеми растениями!');
+      return;
+    }
+    updateBalance(-totalCost);
+    investments.forEach(inv => {
+      if(!isWithered(inv) && inv.growth < MAX_GROWTH) {
+        inv.growth = Math.min(MAX_GROWTH, inv.growth + 10);
+        inv.profit = inv.initial * (inv.growth / 100) * 0.3;
+      }
+    });
+    refreshGarden();
+    updateLeaderboard();
+    updateCharts();
+    updateDashboard();
+    updateRatingsAndAchievements();
+    logAction(`Ухаживали за всеми растениями, потрачено: ${totalCost} ₽`);
+  });
+</script>
+</body>
+</html>
